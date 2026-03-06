@@ -54,23 +54,23 @@ class DrinksActivity : ComponentActivity() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        text = categoryName ?: "Nos Cocktails",
+                                        text = categoryName ?: "Our Cocktails",
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold
                                     )
                                 },
                                 navigationIcon = {
                                     IconButton(onClick = {
-                                        finish() // Ferme l'activité actuelle et revient à la précédente (MainActivity)
+                                        finish()
                                     }) {
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Retour",
+                                            contentDescription = "Back",
                                             tint = Color.White
                                         )
                                     }
                                 },
-                                actions = {}, // On laisse vide pour ne pas avoir le coeur ici
+                                actions = {}, // Vide pour enlever coeur
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
                                     titleContentColor = Color.White

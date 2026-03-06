@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TheGreatestCocktailApp</string>
-    <string name="Ingredients">Ingrédients</string>
-    <string name="Recette">Recette</string>
+    <string name="Ingredients">Ingredients</string>
+    <string name="Recipe">Recipe</string>
     <string name="title_activity_drinks">DrinksActivity</string>
 
     <string name="tab_item_random">A</string>

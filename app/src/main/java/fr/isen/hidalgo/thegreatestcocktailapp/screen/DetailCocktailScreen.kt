@@ -39,6 +39,7 @@ import fr.isen.hidalgo.thegreatestcocktailapp.dataClasses.Drink
 import fr.isen.hidalgo.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 import coil.compose.AsyncImage
 
+// Ancien affichage
 //enum class CocktailCategory(val label: String, val icon: String, val color: Color) {
 //    SOUR("Acide", "🍋", Color(0xFFFFEB3B)),
 //    ALCOHOLIC("Avec Alcool", "🥃", Color(0xFFFFCCBC)),
@@ -64,7 +65,7 @@ fun DetailCocktailScreen(modifier: Modifier = Modifier, drink: Drink?) {
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Pour l'image du cocktail
+        // Image
         AsyncImage(
             model = drink?.thumbUrl,
             contentDescription = "Photo du cocktail",
@@ -77,7 +78,7 @@ fun DetailCocktailScreen(modifier: Modifier = Modifier, drink: Drink?) {
         )
 
         Text(
-            text = drink?.name ?: "Chargement...",
+            text = drink?.name ?: "Loading...",
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
@@ -87,7 +88,7 @@ fun DetailCocktailScreen(modifier: Modifier = Modifier, drink: Drink?) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // les autres infos du cocktail
+        // Les autres infos du cocktail
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +102,7 @@ fun DetailCocktailScreen(modifier: Modifier = Modifier, drink: Drink?) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // pour le verre
+        // Pour le verre
         Surface(
             color = Color.White.copy(alpha = 0.3f),
             shape = RoundedCornerShape(16.dp),
@@ -123,16 +124,16 @@ fun DetailCocktailScreen(modifier: Modifier = Modifier, drink: Drink?) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        // ingredient dynamique
+        // Ingredient dynamique
         CocktailSection(
             title = stringResource(id = R.string.Ingredients),
             content = formatIngredients(drink)
         )
 
-        // recette dynamique
+        // Recette dynamique
         CocktailSection(
-            title = stringResource(id = R.string.Recette),
-            content = drink?.instructions ?: "Aucune instruction disponible."
+            title = stringResource(id = R.string.Recipe),
+            content = drink?.instructions ?: "No instructions available."
         )
 
         Spacer(modifier = Modifier.height(24.dp))

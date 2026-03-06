@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,25 +36,21 @@ import fr.isen.hidalgo.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppThe
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 class DetailCocktailActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // je recupere l'ID depuis l'Intent
         val idDrink = intent.getStringExtra("COCKTAIL_ID")
 
         enableEdgeToEdge()
         setContent {
             TheGreatestCocktailAppTheme {
-                // stock l'objet Drink dans l'Activity
                 var currentDrink by remember { mutableStateOf<Drink?>(null) }
                 var isFavorite by remember { mutableStateOf(false) }
                 val context = LocalContext.current
 
-                //  charge la donnée avant de l'envoyer au Screen
                 LaunchedEffect(idDrink) {
                     val call = if (idDrink != null) {
                         NetworkManager.apiService.getDrinkDetail(idDrink)
@@ -64,12 +61,17 @@ class DetailCocktailActivity : ComponentActivity() {
                     call.enqueue(object : Callback<CocktailResponse> {
                         override fun onResponse(call: Call<CocktailResponse>, response: Response<CocktailResponse>) {
                             if (response.isSuccessful) {
-                                // extrait le premier cocktail de la liste
-                                currentDrink = response.body()?.drinks?.firstOrNull()
+                                val drink = response.body()?.drinks?.firstOrNull()
+                                currentDrink = drink
+
+                                if (drink != null) {
+                                    val favorites = FavoriteManager.getFavorites(context)
+                                    isFavorite = favorites.any { it.id == drink.id }
+                                }
                             }
                         }
                         override fun onFailure(call: Call<CocktailResponse>, t: Throwable) {
-                            Log.e("DetailActivity", "Erreur : ${t.message}")
+                            Log.e("DetailActivity", "Network Error: ${t.message}")
                         }
                     })
                 }
@@ -93,32 +95,32 @@ class DetailCocktailActivity : ComponentActivity() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        text = currentDrink?.name ?: "Détails",
+                                        text = currentDrink?.name ?: "Details",
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold
                                     )
                                 },
                                 navigationIcon = {
-                                    IconButton(onClick = {
-                                        finish()
-                                    }) {
+                                    IconButton(onClick = { finish() }) {
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Retour",
+                                            contentDescription = "Back",
                                             tint = Color.White
                                         )
                                     }
                                 },
                                 actions = {
-                                    if (currentDrink != null) {
+                                    currentDrink?.let { drink ->
                                         IconButton(onClick = {
                                             isFavorite = !isFavorite
-                                            val message = if (isFavorite) "Ajouté !" else "Retiré"
+                                            FavoriteManager.toggleFavorite(context, drink)
+
+                                            val message = if (isFavorite) "Added to favorites !" else "Retired"
                                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                                         }) {
                                             Icon(
                                                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                                contentDescription = "Favoris",
+                                                contentDescription = "Favorites",
                                                 tint = if (isFavorite) Color.Red else Color.White
                                             )
                                         }
@@ -126,8 +128,7 @@ class DetailCocktailActivity : ComponentActivity() {
                                 },
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
-                                    titleContentColor = Color.White,
-                                    actionIconContentColor = Color.White
+                                    titleContentColor = Color.White
                                 )
                             )
                         }

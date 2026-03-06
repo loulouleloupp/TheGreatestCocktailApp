@@ -15,3 +15,5 @@ object NetworkManager {
 			.create(ApiService::class.java)
 	}
 }
+
+// Ce fichier sert à récuperer les infos d'internet

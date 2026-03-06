@@ -11,7 +11,6 @@ object FavoriteManager {
 	private const val KEY_FAVORITES = "favorite_list_json"
 	private val gson = Gson()
 
-	// Sauvegarder ou supprimer l'objet Drink complet
 	fun toggleFavorite(context: Context, drink: Drink) {
 		val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 		val currentFavorites = getFavorites(context).toMutableList()
@@ -29,12 +28,11 @@ object FavoriteManager {
 		prefs.edit().putString(KEY_FAVORITES, json).apply()
 	}
 
-	// Récupérer la liste des Drinks
+	// Liste des boissons
 	fun getFavorites(context: Context): List<Drink> {
 		val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 		val json = prefs.getString(KEY_FAVORITES, null) ?: return emptyList()
 
-		// Précise bien List<Drink> ici
 		val type = object : TypeToken<List<Drink>>() {}.type
 		return try {
 			gson.fromJson(json, type)

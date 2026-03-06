@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val navController = rememberNavController()
 
-                // État pour l'icône coeur et le drink actuel
                 var isFavorite by remember { mutableStateOf(false) }
                 var currentDrink by remember { mutableStateOf<Drink?>(null) }
 
@@ -97,9 +96,7 @@ class MainActivity : ComponentActivity() {
                                     // Condition d'affichage du bouton like
                                     if (currentRoute == "Random" && currentDrink != null) {
                                         IconButton(onClick = {
-                                            // 1. On utilise le FavoriteManager
                                             FavoriteManager.toggleFavorite(context, currentDrink!!)
-                                            // 2. On met à jour l'état visuel du coeur
                                             isFavorite = FavoriteManager.isFavorite(context, currentDrink?.id)
                                         }) {
                                             Icon(
@@ -128,12 +125,11 @@ class MainActivity : ComponentActivity() {
                                             if (response.isSuccessful) {
                                                 val drink = response.body()?.drinks?.firstOrNull()
                                                 currentDrink = drink
-                                                // On vérifie si ce nouveau cocktail est déjà en favori
                                                 isFavorite = FavoriteManager.isFavorite(context, drink?.id)
                                             }
                                         }
                                         override fun onFailure(call: retrofit2.Call<CocktailResponse>, t: Throwable) {
-                                            Log.e("network", "Erreur : ${t.message}")
+                                            Log.e("network", "Error : ${t.message}")
                                         }
                                     })
                                 }
@@ -155,26 +151,11 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Favorites") {
-                                // On passe le modifier avec le padding pour éviter que le contenu soit caché
                                 FavoriteScreen(
-                                    navController = navController,
                                     modifier = Modifier.padding(innerPadding)
                                 )
                             }
 
-                            composable("detail/{drinkId}") { backStackEntry ->
-                                val drinkId = backStackEntry.arguments?.getString("drinkId")
-                                val context = LocalContext.current
-
-                                // On récupère le cocktail complet stocké dans nos favoris grâce à son ID
-                                val drink = remember(drinkId) {
-                                    FavoriteManager.getFavorites(context).find { it.id == drinkId }
-                                }
-
-                                if (drink != null) {
-                                    DetailCocktailScreen(drink = drink, modifier = Modifier.padding(innerPadding))
-                                }
-                            }
                         }
                     }
                 }

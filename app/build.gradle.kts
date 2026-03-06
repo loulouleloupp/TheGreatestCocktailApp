@@ -74,3 +74,9 @@ dependencies {
 
 
 }
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.test.espresso:espresso-core:3.5.0")
+    }
+}
